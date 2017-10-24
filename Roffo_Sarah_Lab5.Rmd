@@ -15,7 +15,9 @@ This is Exercise 1 of the textbook.
 A planner wishes to estimate average household size for a community within 0.2. The planner desires a 95% confidence level. A small survey indicates that the standard deviation of household size is 2.0. How large should the sample be?
 
 ```{r}
-
+n <- qnorm(0.975) * (2/0.2)^2
+n
+##The sample size should be 196 houses
 ```
 
 
@@ -26,7 +28,11 @@ This is Exercise 3 of the textbook.
 The tolerable level of a certain pollutant is 16 mg/l. A researcher takes a sample of size n = 50, and finds that the mean level of the pollutant is 18.5 mg/l, with a standard deviation of 7 mg/l. Construct a 95% confidence interval around the sample mean, and determine whether the tolerable level is within this interval.
 
 ```{r}
-
+q95 <- qnorm(0.975) ##95% confidence interval
+standard.error <- 7/(sqrt(50))
+conf.95 <- c(18.5 - (q95 * standard.error), 18.5 + (q95 * standard.error))
+conf.95
+##Yes, the tolerable level of 16 mg/l is within this interval. 
 ```
 
 
@@ -37,7 +43,11 @@ This is Exercise 5 of the textbook.
 The proportion of people changing residence in the USA each year is 0.165. A researcher believes that the proportion may be different in the town of Amherst. She surveys 50 individuals in the town of Amherst and finds that the proportion who moved last year is 0.24. Is there evidence to conclude that the town has a mobility rate that is different from the national average? Use α = 0.05 and find a 90% confidence interval around the sample proportion, and state your conclusion.
 
 ```{r}
-
+q90 <- qnorm(0.950) ## 90% confidence interval
+standard.error <- 0.05/(sqrt(50))
+conf.90 <- c(.24 - (q90 * standard.error), .24 + (q90 * standard.error))
+conf.90
+##Yes, there is evidence to conclude that the town has a mobility rate that is different than the national average because the national average proportion of 0.165 is not within this interval. 
 ```
 
 
