@@ -32,7 +32,7 @@ q95 <- qnorm(0.975) ##95% confidence interval
 standard.error <- 7/(sqrt(50))
 conf.95 <- c(18.5 - (q95 * standard.error), 18.5 + (q95 * standard.error))
 conf.95
-##Yes, the tolerable level of 16 mg/l is within this interval. 
+##No, the tolerable level of 16 mg/l is not within this interval. 
 ```
 
 
@@ -73,6 +73,35 @@ where the subscript ‘1’ denotes the white population and the subscript ‘2�
 
 ```{r}
 
+#Null Hypothesis: No difference between park-going frequencies of whites and nonwhites
+#Alternative Hypothesis: Difference between park-going frequencies of whites and nonwhites
+
+pooled_estimate <- (19*14.3 + 15*12)/(20 + 16 - 2)
+degrees_freedom <- 20 + 16 - 2
+
+##Variances are Equal
+t = (4.1 - 3.1)/sqrt((13.3/20) + (13.3/16))
+x1 <- 4.1
+x2 <- 3.1
+s <- pooled_estimate
+n1 <- 20
+n2 <- 16
+confidence.interval <- c(((x2 - x1) - t*(sqrt(s/n2) + (s/n2))), ((x2 - x1) + t*(sqrt(s/n2) + (s/n2))))
+confidence.interval ##confidence interval
+
+##Variances are not equal
+t = (4.1 - 3.1)/sqrt((13.3/20) + (13.3/16))
+x1 <- 4.1
+x2 <- 3.1
+s1 <- 14.3
+s2 <- 12
+n1 <- 20
+n2 <- 16
+confidence.interval <- c(((x2 - x1) - t*(sqrt(s1/n2) + (s2/n2))), ((x2 - x1) + t*(sqrt(s1/n2) + (s2/n2))))
+confidence.interval ##confidence interval
+
+##Associated p-value
+
 ```
 
 ## Question 5
@@ -81,7 +110,13 @@ This is Exercise 9 of the textbook.
 A researcher suspects that the level of a particular stream’s pollutant is higher than the allowable limit of 4.2 mg/l. A sample of n = 17 reveals a mean pollutant level of = 6.4 mg/l, with a standard deviation of 4.4 mg/l. Is there sufficient evidence that the stream’s pollutant level exceeds the allowable limit? What is the p-value?
 
 ```{r}
-
+library(MASS)
+sigma = 4.4 * 4.4
+x <- mvrnorm(17, 6.4, sigma, empirical = TRUE)
+x
+t.test(x)
+##No, there is not sufficient evidence that the stream's pollutant level exceeds the allowable limit because the allowable limit of 4.2 mg/l is within the 95% confidenceinterval [4.137729, 8.662271]
+##The p-value is 0.00001862
 ```
 
 
@@ -97,7 +132,16 @@ Community B: sample mean = 2.8 months, s = 0.8 month,  n = 62
 Set up the null and alternative hypotheses. Use α = 0.05. Choose a particular test, and show the rejection regions on a diagram. Calculate the test statistic, and decide whether to reject the null hypothesis. (Do not assume that the two standard deviations are equal to one another – therefore a pooled estimate of s should not be found.)
 
 ```{r}
+sigma_A <- 1.1 * 1.1
+community_A <- mvrnorm(52, 3.4, sigma_A, empirical = TRUE)
+sigma_B <- 0.8 * 0.8
+community_B <- mvrnorm(62, 2.8, sigma_B, empirical = TRUE)
+#Null Hypothesis (H0): Mean of Community A = Mean of Community B
+#Alternative Hypothesis(Ha): Mean of Community A not equal to Mean of Community B
+result <- t.test(community_A, community_B)
 
+if(result$p.value > 0.05){print("We cannot reject the null hypothesis")} else {print("We reject the null hypothesis")}
+##Reject the Null Hypothesis because the P value < 0.05. (P value = 0.0015)
 ```
 
 
@@ -108,7 +152,15 @@ Find the 90% and 95% confidence intervals for the following mean stream link len
 
 100, 426, 322, 466, 112, 155, 388, 1155, 234, 324, 556, 221, 18, 133, 177, 441.
 ```{r}
-
+stream_lengths <- c(100, 426, 322, 466, 112, 155, 388, 1155, 234, 324, 556, 221, 18, 133, 177, 441)
+mean <- mean(stream_lengths)
+sd <- sd(stream_lengths)
+length(stream_lengths)
+x <- mvrnorm(16, mean, sd, empirical = TRUE)
+t.test(x, conf.level = 0.90)
+##90% confidence interval [319.5590, 333.9402]
+t.test(x, conf.level = 0.95)
+##95% confidence interval [318.0077, 335.4923]
 ```
 
 
@@ -118,7 +170,9 @@ This is Exercise 16 of the textbook.
 A researcher surveys 50 individuals in Smithville and 40 in Amherst, finding that 30% of Smithville residents moved last year, while only 22% of Amherst residents did. Is there enough evidence to conclude that mobility rates in the two communities differ? Use a two-tailed alternative, and α = 0.10. Again, find the p-value and a 90% confidence interval for the difference in proportions.
 
 ```{r}
-
+prop.test(x = c(.3*50, .22*40), n = c(50, 40), conf.level = .90)
+if(result$p.value > 0.05){print("We cannot reject the null hypothesis")} else {print("We reject the null hypothesis")}
+##Yes, there is enough evidence to conclude that mobility rates in the two communities differ.
 ```
 
 
@@ -135,6 +189,8 @@ A survey of two towns is carried out to see whether there are differences in lev
 In each case, state the null and alternative hypotheses, and test the null hypothesis, using α = 0.05. Find the p-values and a 95% confidence interval for the difference.
 
 ```{r}
+#Null Hypothesis: There are no differences in education between the two towns
+#Aternative Hypothesis: There are differences in education between the two towns
 
 ```
 
@@ -143,7 +199,11 @@ This is Exercise 20 of the textbook.
 
 A survey of n = 50 people reveals that the proportion of residents in a community who take the bus to work is 0.15. Is this significantly different from the statewide average of 0.10? Use a Type I error probability of 0.05.
 ```{r}
-
-
+result <- prop.test(50 * .15, n = 50, p = .10)
+result
+#Null Hypothesis (H0): Proportion of residents in community taking bus to work is equal to statewide average
+#Alternative Hypothesis(Ha): Proportion of residents in community taking bus to work is different than the statewide average
+if(result$p.value > 0.05){print("We cannot reject the null hypothesis")} else {print("We reject the null hypothesis")}
+#No, this is not significantly different from the statewide average of 0.10
 ```
 
