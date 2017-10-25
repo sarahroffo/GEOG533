@@ -1,10 +1,12 @@
 ---
 title: "Lab 5"
 author: "Sarah Roffo"
-output:  
+output:
+  html_document:
+    toc: yes
   html_notebook:
-    toc: TRUE
-    toc_float: TRUE
+    toc: yes
+    toc_float: yes
 ---
 
 Complete the following exercises in Chapter 5 (Inferential Statistics) of the textbook [R] pages 172-176.
