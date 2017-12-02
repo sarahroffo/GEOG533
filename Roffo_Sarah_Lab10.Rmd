@@ -42,7 +42,7 @@ print('There are 62 counties in New York State')
 ### Question 1(d)	
 What’s the 3-digit fips code of Broome County?
 ```{r}
-countyfips[countyfips$countyname == "broome county",]
+df1[df1$NAME10 == "Broome",]
 print('The fips code of Broome County is 007 -- the last three digits of the fips column')
 ```
 
@@ -62,7 +62,8 @@ skewness(df1$P0010001)
 Create a histogram and a boxplot of the population.
 ```{r}
 hist(df1$P0010001)
-boxplot(df$P0010001)
+
+boxplot(df1$P0010001)
 ```
 
 
@@ -85,7 +86,7 @@ plot(shp)
 Compute the total population based on census tracts.
 ```{r}
 df2 <- shp@data
-pop <- df$P0010001
+pop <- df2$P0010001
 sum(pop)
 print('The total population of New York State based on census tracts is 19,378,102.')
 ```
@@ -95,7 +96,7 @@ Select all census tracts in Broome County and plot the map.
 ```{r}
 df3 <- df2[df2$county == "007",]
 shp <- df3
-plot(df3)
+#plot(df2[df2$county == "007",])
 ```
 
 ### Question 2(d)
@@ -117,9 +118,11 @@ boxplot(df3$P0010001)
 ### Question 2(f)
 Select the first five columns of the shapefile of Broome County census tract; add a new population ratio column (= census tract population / county population); save the new shapefile to the hard drive. 
 ```{r}
-library(raster)
-library(ncdf4)
-?head
+library(rgdal)
+shape <- shp[,1:5]
+shape
+shape$pop <- shape$P0010001/sum(shape$P0010001)
+shape
 ```
 
 
@@ -127,14 +130,13 @@ library(ncdf4)
 
 Use R packages raster and ncdf4 to complete the following tasks:     (20 pt.)
 ```{r}
-
+library(raster)
+library(ncdf4)
 ```
 
 ### Question 3(a)		
 Load the multi-band raster dataset “NDVI.nc” into R.
 ```{r}
-NDVI <- nc_open("NDVI.nc")
-NDVI
 NDVI_RB <- brick("NDVI.nc")
 NDVI_RB
 ```
@@ -145,7 +147,7 @@ Get the basic information about the dataset, including the number of rows, colum
 nrow(NDVI_RB)
 ncol(NDVI_RB)
 ncell(NDVI_RB)
-#bands?
+nbands(NDVI_RB)
 res(NDVI_RB)
 extent(NDVI_RB)
 bbox(NDVI_RB)
@@ -155,25 +157,32 @@ projection(NDVI_RB)
 ### Question 3(c)	
 Aggregate all bands to generate a mean NDVI raster and a maximum NDVI raster; save the two new raster datasets to the hard drive. 
 ```{r}
-
+mean_NDVI <- mean(NDVI_RB)
+plot(mean_NDVI)
+max_NDVI <- max(NDVI_RB)
+plot(max_NDVI)
+writeRaster(x = mean_NDVI, filename = "mean_NDVI.tif", overwrite = TRUE)
+writeRaster(x = max_NDVI, filename = "max_NDVI.tif", overwrite = TRUE)
 ```
 
 ### Question 3(d)			
 Plot the maps of monthly NDVI of the year 2001
 ```{r}
-
+monthly_2001 <- NDVI_RB[[13:24]]
+plot(monthly_2001)
 ```
 
 ### Question 3(e)	
 Create histograms of monthly NDVI of the year 2001.
 ```{r}
-
+hist(monthly_2001)
 ```
 
 ### Question 3(f)			
 Plot the NDVI map of July 2000; click any location with data on the map and retrieve the NDVI time series for all years; plot the NDVI time series of the selected location. 
 ```{r}
-
+plot(NDVI_RB[[7]])
+values <- NDVI_RB[150, 50]
 ```
 
 
