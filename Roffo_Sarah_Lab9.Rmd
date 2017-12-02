@@ -20,11 +20,12 @@ The following results were obtained from a regression of $n = 14$ housing prices
 
 ```{r, echo=FALSE}
 library(knitr)
+F <- (4234/3)/(3487/(14 - 4))
 col1 <- c("Regression SS:","Residual SS:","Total SS:")
 col2 <- c("4234", "3487", 4234 + 3487)
 col3 <- c("3", 14 - 4, 14 - 1)
 col4 <- c(4234/3, 3487/10, "")
-col5 <- c(4234/3, 3487/10, "", "")
+col5 <- c(F, "", "")
 df <- cbind(col1,col2,col3,col4,col5)
 colnames(df) <- c("","Sum of squares","df","Mean square","F")
 kable(df)
@@ -62,14 +63,14 @@ What is the value of $r^2$?
 What is the standard error of the estimate? 
 
 ```{r}
-sqrt(3487/12)
+sqrt(3487/10)
 ```
 
 
 ### Question 1(d)
 Test the null hypothesis that $R^2 = 0$ by comparing the $F-statistic$ from the table with its critical value. 
 ```{r}
-crit <- qf(0.95, 3, 13)
+crit <- qf(0.95, 3, 10)
 crit
 print('We reject the null hypothesis because the critical value of 3.410534 is less than the F-statistic value of 4.04741420514291')
 ```
@@ -87,13 +88,17 @@ print('No, I would expect the coefficients to all increase with higher median fa
 Find the $t-statistics$ associated with each coefficient, and test the null hypotheses that the coefficients are equal to zero. Use $ \alpha = 0.05$, and be sure to give the critical value of $t$. 
 
 ```{r}
-??????
-t1 <- 1.57/0.34
-t2 <- 23.4/11.2
-t3 <- (-9.5)/7.1
-cri.t1 <- qt(0.975,10)
-cri.t2 <- qt(0.975,10)
-cri.t3 <- qt(0.025,10)
+income_t <- 1.57/0.34
+house_t <- 23.4/11.2
+lot_t <- (-9.5)/7.1
+
+critical_t <- qt(0.975,10)
+income_t > critical_t
+print('We reject the null -- median family income coefficient is not equal to zero.')
+house_t > critical_t
+print('We fail to reject the null hypothesis for the size of house coefficient.')
+lot_t > critical_t
+print('We fail to reject the null hypothesis for the size of lot coefficient.')
 ```
 
 
@@ -101,7 +106,7 @@ cri.t3 <- qt(0.025,10)
 What do you conclude from the variance inflation factors (VIFs)? What (if any) modifications would you recommend in light of the VIFs? 
 
 ```{r}
-print('From the variance inflation factors, I conclude that ____________')
+print('From the variance inflation factors, I conclude that the size of lot factor varies the most. I would recommend removing this factor if any are to be removed.')
 ```
 
 
@@ -109,7 +114,7 @@ print('From the variance inflation factors, I conclude that ____________')
 What is the predicted sales price of a house that is 1500 square feet, on a lot 60´×100´, and in a neighborhood where the median family income is $40,000?
 
 ```{r}
-predicted_sales_price <- 1.57 * 40000 + 23.4 * 1500 - 9.5 * 6000
+predicted_sales_price <- (1500 * 23.4) - (6000 * 9.5) + (40000 * 1.57)
 predicted_sales_price
 print('The predicted sales price of this house is $40,900.')
 ```
@@ -136,10 +141,9 @@ floor_area <- UK_Housing$floorarea
 detached <- UK_Housing$detached
 fireplace <- UK_Housing$fireplace
 m <- lm(price ~ garage + bedrooms + bathrooms + date_built + floor_area + detached + fireplace)
-
 summary(m)
-n <- anova(m)
-n$`Sum Sq`
+plot(m)
+print('There appears to be an outlier coefficient that varies from the norm on the regression line at the upper end of the line.')
 ```
 
 
@@ -149,7 +153,7 @@ Attempt to improve the regression equation found in (a). Justify your decisions 
 ```{r}
 improved_regression <- step(m, direction = "backward")
 summary(improved_regression)
-print('The improved model excluded the bedrooms independent variable.')
+print('I used the backward stepwise regression because it will remove the underperforming independent variables, if there are any. The improved model excluded the bedrooms independent variable.')
 ```
 
 
@@ -173,7 +177,8 @@ age <- Milwaukee$Age
 bathrooms <- Milwaukee$Baths
 m <- lm(price ~ bedrooms + lot_size + square_footage + age + bathrooms)
 summary(m)
-anova(m)
+plot(m)
+print('There dont appear to be any outlier coefficients that vary severely from the norm on the regression line.')
 ```
 
 
@@ -183,6 +188,6 @@ Attempt to improve the regression equation found in (a). Justify your decisions 
 ```{r}
 improved_regression <- step(m, direction = "backward")
 summary(improved_regression)
-print('No independent variables are excluded.')
+print('I used the backward stepwise regression because it will remove the underperforming independent variables, if there are any. No independent variables were excluded in this attempt to improve the equation.')
 ```
 
