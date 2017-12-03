@@ -1,0 +1,18 @@
+---
+title: "Perception of Immigrants in Providence, Rhode Island"
+author: "Sarah Roffo"
+date: "12/2/2017"
+output: html_document
+---
+
+I will be using R to conduct a statistical analysis of the perception of immigrants in the state of Rhode Island.
+This analysis will allow me to target what factors contribute to the perception of immigrants most heavily, and identify which factors have the most significant positive or negative influences on perception.
+From the analysis, I expect to find that people in Rhode Island do not have an overall negative perception of immigrants.
+
+The test data will consist of a survey conducted by the University of Rhode Island for the 2014 report, Immigrants and Immigration in the Ocean State: History, Demography, Public Opinion, and Policy Responses. Specifically, the data is gathered from the Public Opinion Section of this report.
+
+```{r}
+Perception_Data <- read.csv("Perception_Data.csv")
+
+```
+
