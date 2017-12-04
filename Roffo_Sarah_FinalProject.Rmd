@@ -1,0 +1,92 @@
+---
+title: "Perception of Immigrants in Rhode Island"
+author: "Sarah Roffo"
+date: "12/2/2017"
+output: html_document
+---
+
+##Introduction 
+I will be using R to conduct a statistical analysis of the perception of immigrants in the state of Rhode Island.
+
+I will use the method of correlation to analyze the relationship between age and the perception of immigrants, as well as the relationship between educational attainment and the perception of immigrants. 
+
+From the analysis, I expect to find that people in Rhode Island with lower levels of educational attainment as well as those with higher ages are more likely to have a negative perception of immigrants.
+
+The test data will consist of a survey conducted by the University of Rhode Island for the 2014 report, 'Immigrants and Immigration in the Ocean State: History, Demography, Public Opinion, and Policy Responses'. Specifically, the data is gathered from the Public Opinion Section of this report. 300 residents of Rhode Island were surveyed with 100 residents being in the 18-35 year age group, 100 residents being in the 36-55 age group, and 100 residents being in the 56+ age group. 
+
+The negative perception of immigrants variable is determined based on the survey respondents' answers to whether they feel that 'Immigrants today are a burden on our state because they take our jobs, housing, and health care'. 
+
+##Age and Negative Perception
+Correlation between age and negative perception:
+```{r}
+library(knitr)
+age <- c(18, 36, 55)
+negative_perception <- c(0.13, 0.20, 0.19)
+df <- data.frame(age, negative_perception)
+names(df) <- c("Age of Survey Respondents", "Negative Perception (%)")
+kable(df)
+```
+
+Correlation coefficient (r):
+```{r}
+cor(age, negative_perception, method = "pearson")
+#This value varies from -1 to +1, with 0 meaning there is no relationship
+```
+
+
+Testing the null hypothesis:
+
+Null hypothesis -- There is no relationship between the age of survey respondents and their perception of immigrants.
+
+Alternative hypothesis -- There is a relationship between the age of survey respondents and their perception of immigrants.
+```{r}
+cor.test(age, negative_perception, method = "pearson")
+#If p-value is < 0.05, we accept the null hypothesis
+print('We reject the null hypothesis that there is no relationship between age and perception of immigrants.')
+```
+
+Scatter Plot of the relationship between age and perception:
+```{r}
+plot(age, negative_perception)
+```
+
+Negative perception of immigrants is generally more prominent among those in higher age groups.
+
+##Educational Attainment and Negative Perception
+Correlation between level of educational attainment and negative perception:
+```{r}
+education <- c(25, 50, 0)
+negative_perception1 <- c(.23, .13, 0)
+#where 25 = High School graduate or less and 50 = educated beyond high school, and 0 is a placeholder value
+df1 <- data.frame(education, negative_perception1)
+names(df1) <- c("Educational Attainment", "Negative Perception (%")
+kable(df1)
+```
+
+Correlation coefficient (r):
+```{r}
+cor(education, negative_perception1, method = "pearson")
+#This value varies from -1 to +1, with 0 meaning there is no relationship
+```
+
+Testing the null hypothesis:
+
+Null hypothesis -- There is no relationship between the level of educational attainment of survey respondents and their perception of immigrants.
+
+Alternative hypothesis -- There is a relationship between the level of educational attainment of survey respondents and their perception of immigrants.
+```{r}
+cor.test(education, negative_perception1, method = "pearson")
+#If p-value is < 0.05, we accept the null hypothesis
+print('We reject the null hypothesis that there is no relationship between level of educational attainment and perception of immigrants.')
+```
+
+Scatter Plot of the relationship between level of educational attainment and perception:
+```{r}
+plot(education, negative_perception1)
+```
+
+Negative perception of immigrants generally lowers with higher levels of educational attainment.
+
+##Conclusion
+From the statistical analysis, we can conclude that there is a positive relationship between the negative perception of immigrants and both increasing age and lower levels of educational attainment in the state of Rhode Island. 
+
